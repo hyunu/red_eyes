@@ -1,0 +1,63 @@
+system:
+  device: "mps"
+  max_memory_gb: 5.0
+  log_level: "INFO"
+  log_file: "data/logs/red_eyes.log"
+
+rtsp:
+  cameras:
+    - id: "cam_01"
+      name: "현관"
+      url: "rtsp://admin:password@192.168.1.100:554/stream1"
+      enabled: true
+  reconnect:
+    initial_delay: 1.0
+    max_delay: 300.0
+    max_attempts: 100
+  frame:
+    target_width: 640
+    target_height: 640
+    max_queue_size: 3
+
+detection:
+  model: "yolov8n.pt"
+  confidence: 0.5
+  device: "mps"
+  adaptive:
+    idle_interval: 3.0
+    active_interval: 0.5
+    max_interval: 5.0
+    cpu_threshold: 0.7
+
+events:
+  approach_threshold: 3.0
+  loitering_threshold: 30
+  delivery_threshold: 10
+  patrol_min_moves: 3
+  night_mode_start: "22:00"
+  night_mode_end: "06:00"
+
+vlm:
+  provider: "ollama"
+  model: "qwen2-vl:2b"
+  base_url: "http://localhost:11434"
+  timeout: 30
+  max_images: 2
+  prompt: |
+    CCTV 영상을 분석하여 사람의 행동을 설명하세요.
+    무엇을 했는지, 얼마나 머물렀는지, 물건 관련 행동이 있었는지 중점으로 설명하세요.
+    한국어로 1-2 문장만 응답하세요.
+    사람이 보이지 않으면 "사람이 확인되지 않습니다."라고 응답하세요.
+
+telegram:
+  bot_token: ""
+  chat_id: ""
+  rate_limit: 300
+  max_images_per_alert: 2
+
+storage:
+  base_dir: "data/events"
+  max_disk_gb: 1.0
+  retention_days: 7
+  keyframes_per_event: 2
+  cleanup_interval: 3600
